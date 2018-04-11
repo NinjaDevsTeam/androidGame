@@ -5,8 +5,9 @@ using UnityStandardAssets.CrossPlatformInput;
 
 public class Player2DController : MonoBehaviour
 {
-    public float moveForce = 5;
+    public float velocity = 1;
     Rigidbody2D myBody;
+    public Vector2 tmpPosition;
 
 	// Use this for initialization
 	void Start ()
@@ -18,7 +19,9 @@ public class Player2DController : MonoBehaviour
 	void FixedUpdate ()
     {
         Vector2 myVec = new Vector2(CrossPlatformInputManager.GetAxis("Horizontal"),
-            CrossPlatformInputManager.GetAxis("Vertical")) * moveForce;
-        myBody.AddForce(myVec);
+            CrossPlatformInputManager.GetAxis("Vertical")) * velocity * Time.deltaTime;
+        //myBody.AddForce(myVec);
+        tmpPosition = myBody.position + myVec;
+        myBody.position = tmpPosition;
 	}
 }
