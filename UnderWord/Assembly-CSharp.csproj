@@ -62,8 +62,14 @@
      <Compile Include="Assets\CyberPunk_Blonde\Sprites\Egypt_Gladiators\Scripts\Break.cs" />
      <Compile Include="Assets\CyberPunk_Blonde\Sprites\Egypt_Gladiators\Scripts\GladiatorController.cs" />
      <Compile Include="Assets\MainCameraController.cs" />
-     <Compile Include="Assets\Scripts\LoadSceneController.cs" />
+     <Compile Include="Assets\Scripts\AppearingMonstersController.cs" />
+     <Compile Include="Assets\Scripts\ChangeRoomController.cs" />
+     <Compile Include="Assets\Scripts\FightScreenController.cs" />
+     <Compile Include="Assets\Scripts\MenuController.cs" />
+     <Compile Include="Assets\Scripts\MySceneManager.cs" />
      <Compile Include="Assets\Scripts\Player2DController.cs" />
+     <Compile Include="Assets\Scripts\PutWordsController.cs" />
+     <Compile Include="Assets\Scripts\SwordChallengeController.cs" />
      <Compile Include="Assets\TutorialInfo\Scripts\Readme.cs" />
      <Compile Include="Assets\TutorialInfo\Scripts\TutorialInfo.cs" />
      <None Include="Assets\TutorialInfo\Fonts\LICENSE.txt" />

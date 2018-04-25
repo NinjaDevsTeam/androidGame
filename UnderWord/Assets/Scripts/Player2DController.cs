@@ -2,9 +2,11 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityStandardAssets.CrossPlatformInput;
+using UnityEngine.SceneManagement;
 
 public class Player2DController : MonoBehaviour
 {
+    public List<KeyValuePair<string, string>> LearnedWords;
     public float velocity = 1;
     Rigidbody2D myBody;
     public Vector2 tmpPosition;
@@ -12,7 +14,15 @@ public class Player2DController : MonoBehaviour
 	// Use this for initialization
 	void Start ()
     {
+        LearnedWords = new List<KeyValuePair<string, string>>();
+        LearnedWords.Add(new KeyValuePair<string, string>("gra", "game"));
         myBody = this.GetComponent<Rigidbody2D>();
+        Debug.Log("zmiana sceny");
+        //if (SceneManager.GetActiveScene().name == "Adventure")
+        //{
+        //    myBody.position = new Vector2(8, 0);
+        //    Debug.Log("playerAdv");
+        //}
 	}
 	
 	// Update is called once per frame
@@ -24,4 +34,5 @@ public class Player2DController : MonoBehaviour
         tmpPosition = myBody.position + myVec;
         myBody.position = tmpPosition;
 	}
+	
 }
