@@ -249,7 +249,6 @@
     <Compile Include="Assets\CyberPunk_Blonde\Sprites\Egypt_Gladiators\Scripts\GladiatorController.cs" />
     <Compile Include="Assets\MainCameraController.cs" />
     <Compile Include="Assets\Scripts\AddRoom.cs" />
-    <Compile Include="Assets\Scripts\Destroyer.cs" />
     <Compile Include="Assets\Scripts\LoadSceneController.cs" />
     <Compile Include="Assets\Scripts\Player2DController.cs" />
     <Compile Include="Assets\Scripts\RoomSpawner.cs" />
