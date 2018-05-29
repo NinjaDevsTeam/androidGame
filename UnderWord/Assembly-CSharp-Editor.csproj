@@ -51,6 +51,8 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+     <Compile Include="Assets\Simple Health Bar\Editor\SimpleHealthBarEditor.cs" />
+     <Compile Include="Assets\Simple Health Bar\Editor\SimpleHealthBarWindow.cs" />
      <Compile Include="Assets\TutorialInfo\Scripts\Editor\ReadmeEditor.cs" />
      <Compile Include="Assets\TutorialInfo\Scripts\Editor\TutorialInfoEditor.cs" />
  <Reference Include="UnityEngine.UI">

@@ -1,0 +1,21 @@
+fileFormatVersion: 2
+guid: e9c305499b7b7004e8adf75e0ae7fb7e
+timeCreated: 1527108785
+licenseType: Free
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences:
+  - BigFireballPrefab: {fileID: 1156418257492294, guid: 462fda18ab2114d42945cd039278c706,
+      type: 2}
+  - FireballPrefab: {fileID: 1004568389891554, guid: da4abe45dd08fe24c875f6a0509566a2,
+      type: 2}
+  - DragonballPrefab: {fileID: 1625510728909072, guid: 7b030581f488fd24b99d24da53be9f01,
+      type: 2}
+  - AnswerButtonPrefab: {fileID: 1505121239385164, guid: c86941fde0deeb54f875ce7283da344d,
+      type: 2}
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
