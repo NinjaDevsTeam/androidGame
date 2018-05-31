@@ -54,6 +54,8 @@ public class HealthScript : MonoBehaviour {
 		Destroy (gameObject);
 
 		ShowBattleResult ();
+        //yield return new WaitForSeconds(3f);
+        UnityEngine.SceneManagement.SceneManager.LoadScene("Dungeon");
 	}
 
 	IEnumerator ShakeCamera ()
