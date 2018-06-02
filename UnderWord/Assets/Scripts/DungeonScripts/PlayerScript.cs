@@ -13,8 +13,8 @@ public class PlayerScript : MonoBehaviour {
 
 	void Start () {
 		rg2d = gameObject.GetComponent<Rigidbody2D> ();
-		anim = gameObject.GetComponent<Animator> ();
-	}
+        anim = gameObject.GetComponent<Animator>();
+    }
 
 	// Update is called once per frame
 	void Update () {

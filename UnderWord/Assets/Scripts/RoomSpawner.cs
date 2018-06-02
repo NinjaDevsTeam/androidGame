@@ -8,14 +8,14 @@ public class RoomSpawner : MonoBehaviour
     public OpeningDirection openingDirection;
 
     private RoomTemplates templates;
-    private static BoardState boardState;
+    
     private int rand;
     private bool spawned = false;
 
     void Start()
     {
         templates = GameObject.FindGameObjectWithTag("Rooms").GetComponent<RoomTemplates>();
-        boardState = GameObject.FindGameObjectWithTag("BoardState").GetComponent<BoardState>();
+        
         Invoke("Spawn", 5f);
     }
 
