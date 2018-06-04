@@ -81,6 +81,7 @@
      <Compile Include="Assets\Scripts\FightTrigger.cs" />
      <Compile Include="Assets\Scripts\GameState.cs" />
      <Compile Include="Assets\Scripts\LevelGenerator.cs" />
+     <Compile Include="Assets\Scripts\LevelTitle.cs" />
      <Compile Include="Assets\Scripts\LoadSceneController.cs" />
      <Compile Include="Assets\Scripts\MenuScripts\MenuFader.cs" />
      <Compile Include="Assets\Scripts\MenuScripts\MenuManager.cs" />
@@ -92,6 +93,7 @@
      <Compile Include="Assets\Scripts\RoomTemplates.cs" />
      <Compile Include="Assets\Scripts\ScrollScript.cs" />
      <Compile Include="Assets\Scripts\SetPosition.cs" />
+     <Compile Include="Assets\Scripts\SoundButton.cs" />
      <Compile Include="Assets\Simple Health Bar\_Asteroids Example\Scripts\AsteroidController.cs" />
      <Compile Include="Assets\Simple Health Bar\_Asteroids Example\Scripts\GameManager.cs" />
      <Compile Include="Assets\Simple Health Bar\_Asteroids Example\Scripts\HealthPickupController.cs" />

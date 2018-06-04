@@ -46,6 +46,11 @@ public class BattleManager : MonoBehaviour
 	[Header( "BattleOver" )]
 	bool hasLost = false;
 
+    //words
+    string polishWord;
+    string[] englishWords = new string[3];
+    int answer;
+
 	void Awake ()
 	{
 		// If the instance variable is already assigned...
@@ -96,7 +101,16 @@ public class BattleManager : MonoBehaviour
 	}
 
 	public void FireballAttack(){
-		Button simpleAttackButton = GameObject.Find ("BasicAttackButton").GetComponent<UnityEngine.UI.Button>();
+        int keyNumber = (int)Random.Range(0, LevelGenerator.vocabulary.Count());
+        polishWord = LevelGenerator.vocabulary[keyNumber].Key;
+        answer = (int)Random.Range(0, 3);
+        //englishWords.Add(LevelGenerator.vocabulary[keyNumber].Value);
+        //englishWords.Add(LevelGenerator.vocabulary[keyNumber -1 ].Value);
+        //englishWords.Add(LevelGenerator.vocabulary[keyNumber+1].Value);
+        englishWords[answer] = LevelGenerator.vocabulary[keyNumber].Value;
+        englishWords[(answer + 1) % 3] = LevelGenerator.vocabulary[(keyNumber + 2) % LevelGenerator.vocabulary.Count()].Value;
+        englishWords[(answer + 2) % 3] = LevelGenerator.vocabulary[(keyNumber + 1) % LevelGenerator.vocabulary.Count()].Value;
+        Button simpleAttackButton = GameObject.Find ("BasicAttackButton").GetComponent<UnityEngine.UI.Button>();
 		simpleAttackButton.enabled = false;
 
 		Button specialAttackButton = GameObject.Find ("SpecialAttackButton").GetComponent<UnityEngine.UI.Button>();
@@ -158,6 +172,7 @@ public class BattleManager : MonoBehaviour
 		GameObject canvas = GameObject.Find("Canvas");
 		GameObject answerButton = GameObject.Find("Canvas");
 		Text buttonText;
+        print("GOOD ANSWER IS " + answer);
 		switch(index)
 		{
 		case 0:
@@ -166,7 +181,7 @@ public class BattleManager : MonoBehaviour
 //			buttonText = QButton.gameObject.GetComponent<Text> ();
 //			buttonText.text = "run";
 //			Destroy (questionBall);
-			InstantiateAnswerButton(out QButton, QuestionButton, position, "run",  ref questionBall, ref canvas);
+			InstantiateAnswerButton(out QButton, QuestionButton, position, polishWord,  ref questionBall, ref canvas);
 			break;
 		case 1:
 //			FButton = Instantiate (FAButton);
@@ -176,9 +191,10 @@ public class BattleManager : MonoBehaviour
 //			buttonScript.hasGoodAnswer = true;
 //			buttonText.text = "biec";
 //			Destroy (firstBall);			
-			InstantiateAnswerButton(out FButton, FAButton, position, "biec", ref firstBall, ref canvas);
+			InstantiateAnswerButton(out FButton, FAButton, position, englishWords[0], ref firstBall, ref canvas);
 			AnswerButton buttonScript = FButton.gameObject.GetComponent<AnswerButton> ();
-			buttonScript.hasGoodAnswer = true;
+            if(answer == 0)
+			    buttonScript.hasGoodAnswer = true;
 			break;
 		case 2:
 //			SButton = Instantiate (SAButton);
@@ -186,16 +202,22 @@ public class BattleManager : MonoBehaviour
 //			buttonText = SButton.gameObject.GetComponent<Text> ();
 //			buttonText.text = "kopać";
 			//			Destroy (secondBall);			
-			InstantiateAnswerButton(out SButton, SAButton, position, "upaść", ref secondBall, ref canvas);
-			break;
+			InstantiateAnswerButton(out SButton, SAButton, position, englishWords[1], ref secondBall, ref canvas);
+            AnswerButton buttonScript1 = FButton.gameObject.GetComponent<AnswerButton>();
+            if (answer == 1)
+                buttonScript1.hasGoodAnswer = true;
+            break;
 		case 3:
 //			TButton = Instantiate (TAButton);
 			position = new Vector3 (650, 130, 0);
 //			buttonText = TButton.gameObject.GetComponent<Text> ();
 //			buttonText.text = "pokazywać";
 			//			Destroy (thirdBall);	
-			InstantiateAnswerButton(out TButton, TAButton, position, "myć", ref thirdBall, ref canvas);		
-			break;
+			InstantiateAnswerButton(out TButton, TAButton, position, englishWords[2], ref thirdBall, ref canvas);
+            AnswerButton buttonScript2 = FButton.gameObject.GetComponent<AnswerButton>();
+            if (answer == 2)
+                buttonScript2.hasGoodAnswer = true;
+            break;
 		}
 		/*answerButton.transform.SetParent(canvas.transform);
 		Animator ABAnimator = answerButton.GetComponent<Animator> ();

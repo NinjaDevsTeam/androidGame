@@ -14,13 +14,13 @@ public class LevelGenerator : MonoBehaviour {
     public List<Vector2> fightsPositions = new List<Vector2>();
     private int gridSizeX, gridSizeY;
     [Header("Parameters:")]
-    public int numberOfRooms = 20;
-    public int numberOfScrolls = 8;
-    public int numberOfEnemies = 12;
+    public int numberOfRooms = 10;
+    public int numberOfScrolls = 4;
+    public int numberOfEnemies = 2;
     public GameObject Top, Bottom, Left, Right, TopBottom, TopLeft, TopRight,
         BottomLeft, BottomRight, LeftRight, TopBottomLeft, TopBottomRight, TopLeftRight,
         BottomLeftRight, TopBottomLeftRight, Scroll, Fight;
-
+    public static List<KeyValuePair<string, string>> vocabulary = new List<KeyValuePair<string, string>>();
     private void Awake()
     {
         GameState gameState = GameObject.FindGameObjectWithTag("GameState").GetComponent<GameState>();
@@ -45,22 +45,32 @@ public class LevelGenerator : MonoBehaviour {
         generator.DrawMap();
         print("Log: Drawing map finished.");
 
+        getToDB();
+        
+    }
+    private void getToDB()
+    {
         string conn = "URI=file:" + Application.dataPath + "/Database/Vocabulary.db"; //Path to database.
         IDbConnection dbconn;
         print(conn);
         dbconn = (IDbConnection)new SqliteConnection(conn);
         dbconn.Open(); //Open connection to the database.
         IDbCommand dbcmd = dbconn.CreateCommand();
-        string sqlQuery = "SELECT id, polish, english " + "FROM Vocabulary";
+        int level = PlayerPrefs.GetInt("level", 1);
+        string sqlQuery = "SELECT id, polish, english " + "FROM Vocabulary where id = " + level + ";";
+        print(sqlQuery);
         dbcmd.CommandText = sqlQuery;
         IDataReader reader = dbcmd.ExecuteReader();
-        while (reader.Read())
+        int scrollsOnLevel = numberOfScrolls;
+        while (scrollsOnLevel > 0 && reader.Read())
         {
             int value = reader.GetInt32(0);
             string name = reader.GetString(1);
             string rand = reader.GetString(2);
 
             Debug.Log("value= " + value + "  name =" + name + "  random =" + rand);
+            scrollsOnLevel--;
+            vocabulary.Add(new KeyValuePair<string, string>(name, rand));
         }
         reader.Close();
         reader = null;
