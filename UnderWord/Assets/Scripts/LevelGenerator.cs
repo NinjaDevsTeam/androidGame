@@ -1,7 +1,8 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+using Mono.Data.Sqlite;
+using System.Data;
 public class LevelGenerator : MonoBehaviour {
 
     public static LevelGenerator generator;
@@ -28,16 +29,39 @@ public class LevelGenerator : MonoBehaviour {
             generator = this;
             generator.Generate();
         }
-        else if(generator != this)
+        else if (generator != this)
         {
             print("Log: Number of rooms: " + generator.takenPositions.Count);
             Destroy(gameObject);
-        }        
+        }
         print("Log: Drawing map...");
         generator.DrawMap();
         print("Log: Drawing map finished.");
-    }
 
+        string conn = "URI=file:" + Application.dataPath + "/Database/Vocabulary.db"; //Path to database.
+        IDbConnection dbconn;
+        print(conn);
+        dbconn = (IDbConnection)new SqliteConnection(conn);
+        dbconn.Open(); //Open connection to the database.
+        IDbCommand dbcmd = dbconn.CreateCommand();
+        string sqlQuery = "SELECT id, polish, english " + "FROM Vocabulary";
+        dbcmd.CommandText = sqlQuery;
+        IDataReader reader = dbcmd.ExecuteReader();
+        while (reader.Read())
+        {
+            int value = reader.GetInt32(0);
+            string name = reader.GetString(1);
+            string rand = reader.GetString(2);
+
+            Debug.Log("value= " + value + "  name =" + name + "  random =" + rand);
+        }
+        reader.Close();
+        reader = null;
+        dbcmd.Dispose();
+        dbcmd = null;
+        dbconn.Close();
+        dbconn = null;
+    }
     private void Generate()
     {
         print("Log: Level generation started...");

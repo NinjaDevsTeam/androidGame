@@ -119,6 +119,7 @@ public class BattleManager : MonoBehaviour
 
 		Button specialAttackButton = GameObject.Find ("SpecialAttackButton").GetComponent<UnityEngine.UI.Button>();
 		specialAttackButton.enabled = true;
+
 	}
 
 	private void CreateAnswer(int index){

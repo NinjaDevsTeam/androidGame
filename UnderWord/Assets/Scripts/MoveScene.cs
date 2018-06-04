@@ -13,6 +13,7 @@ public class MoveScene : MonoBehaviour
         if(other.CompareTag("Player"))
         {
             SceneManager.LoadScene(loadLevel);
+            PlayerPrefs.SetInt("healthpoints", 100);
         }
     }
 }

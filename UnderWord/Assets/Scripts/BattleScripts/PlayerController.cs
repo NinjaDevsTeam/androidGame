@@ -9,7 +9,7 @@ public class PlayerController : MonoBehaviour {
 	public static PlayerController Instance { get { return instance; } }
 
 	public int maxHealth = 100;
-	float currentHealth = 0;
+	public int currentHealth = 0;
 	public bool isPlayer = true;
 
 	public SimpleHealthBar healthBar;
@@ -23,15 +23,18 @@ public class PlayerController : MonoBehaviour {
 		if( instance != null )
 			Debug.LogError( "There are multiple instances of the Player Health script. Assigning the most recent one to Instance." );
 
-		// Assign the instance variable as the Player Health script on this object.
-		instance = GetComponent<PlayerController>();
+
+
+
+        currentHealth = maxHealth;
+        // Assign the instance variable as the Player Health script on this object.
+        instance = GetComponent<PlayerController>();
 	}
 
 	void Start()
 	{
-		currentHealth = maxHealth;
-
-		healthBar.UpdateBar( currentHealth, maxHealth );
+        currentHealth = PlayerPrefs.GetInt("healthpoints");
+        healthBar.UpdateBar( currentHealth, maxHealth );
 	}
 
 	// Use this for initialization
@@ -53,9 +56,11 @@ public class PlayerController : MonoBehaviour {
 				}
 				else {
 					healthBar.UpdateBar( currentHealth, maxHealth );
-					ninjaAnimator.Play ("Ninja_Hurt");					
-				}
-			}
+					ninjaAnimator.Play ("Ninja_Hurt");
+
+                    PlayerPrefs.SetInt("healthpoints", currentHealth);			
+                }
+            }
 		}
 	}
 	private IEnumerator Die(Animator ninjaAnimator)
