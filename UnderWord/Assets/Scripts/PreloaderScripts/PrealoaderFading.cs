@@ -8,6 +8,7 @@ public class PrealoaderFading : MonoBehaviour {
 	public CanvasGroup fadeGroup;
 	public float loadTime;
 	public float minLogoTime = 3.0f;
+    public string scene;
 	// Use this for initialization
 	void Start () {
 		fadeGroup = FindObjectOfType<CanvasGroup> ();
@@ -30,7 +31,7 @@ public class PrealoaderFading : MonoBehaviour {
 			fadeGroup.alpha = Time.time - minLogoTime;
 
 			if (fadeGroup.alpha >= 1) {
-				SceneManager.LoadScene ("Menu");
+				SceneManager.LoadScene (scene);
 			}
 		}
 	}

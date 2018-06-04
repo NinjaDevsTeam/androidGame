@@ -9,10 +9,20 @@ public class ScrollScript : MonoBehaviour
     {
         if (other.CompareTag("Player"))
         {
-            LevelGenerator levGen = 
+            try
+            {
+                LevelGenerator levGen =
                 GameObject.FindGameObjectWithTag("LevelGenerator").GetComponent<LevelGenerator>();
-            levGen.scrollsPositions.Remove(gameObject.transform.position);
-            Destroy(gameObject);
+                levGen.scrollsPositions.Remove(gameObject.transform.position);
+            }
+            catch
+            {
+                print("Error: No level generator found");
+            }
+            finally
+            {
+                Destroy(gameObject);
+            }
         }
     }
 }
