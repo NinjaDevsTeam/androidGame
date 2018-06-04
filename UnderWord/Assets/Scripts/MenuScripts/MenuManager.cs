@@ -12,6 +12,6 @@ public class MenuManager : MonoBehaviour {
 
 	public void PlayGame()
 	{
-		SceneManager.LoadScene ("Base room");
+		SceneManager.LoadScene ("Level Title");
 	}
 }

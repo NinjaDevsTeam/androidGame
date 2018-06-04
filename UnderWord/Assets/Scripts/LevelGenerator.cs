@@ -23,6 +23,13 @@ public class LevelGenerator : MonoBehaviour {
 
     private void Awake()
     {
+        GameState gameState = GameObject.FindGameObjectWithTag("GameState").GetComponent<GameState>();
+        gameState.levelCounter++;
+        if (gameState.isNewLevel)
+        {
+            generator = null;
+            gameState.isNewLevel = false;
+        }
         if (generator == null)
         {
             DontDestroyOnLoad(gameObject);
