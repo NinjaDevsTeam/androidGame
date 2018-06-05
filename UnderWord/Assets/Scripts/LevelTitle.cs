@@ -17,10 +17,8 @@ public class LevelTitle : MonoBehaviour
     {
         gameState = GameObject.FindGameObjectWithTag("GameState").GetComponent<GameState>();
         Text text = FindObjectOfType<Text>();
-        if (gameState.levelCounter == 0)
-            text.text = "Początek";
-        else
-            text.text = "Poziom " + gameState.levelCounter;
+        
+		text.text = "Poziom " + gameState.levelCounter;
 
         fadeGroup = FindObjectOfType<CanvasGroup>();
         fadeGroup.alpha = 1;
@@ -48,7 +46,7 @@ public class LevelTitle : MonoBehaviour
                 if (gameState.levelCounter != 0)
                     gameState.isNewLevel = true; 
 
-                SceneManager.LoadScene("Base room");
+                SceneManager.LoadScene("Dungeon");
             }
         }
     }

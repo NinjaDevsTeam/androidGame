@@ -11,10 +11,12 @@ public class GameState : MonoBehaviour {
 
     public static GameState gameState;
 
+
     private void Awake()
     {
         if (gameState == null)
         {
+           
             DontDestroyOnLoad(gameObject);
             gameState = this;
         }

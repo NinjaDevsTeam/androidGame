@@ -5,30 +5,25 @@ using UnityEngine.SceneManagement;
 
 public class MoveScene : MonoBehaviour
 {
-    //[SerializeField]
-    private string loadLevel = "Base room";
+    [SerializeField]
+    private string loadLevel;
 
     private void OnTriggerEnter2D(Collider2D other)
     {
         if(other.CompareTag("Player"))
         {
-            int l = PlayerPrefs.GetInt("level", 1);
-            if (loadLevel == "Dungeon" && ScrollScript.numberOfPickedScrolls == 2)
+			if (loadLevel == "Level Title") {
+				ScrollScript.numberOfPickedScrolls = 0;
+				SceneManager.LoadScene (loadLevel);
+				return;
+			}
+			LevelGenerator levGen =
+				GameObject.FindGameObjectWithTag("LevelGenerator").GetComponent<LevelGenerator>();
+			if (loadLevel == "Base room" && ScrollScript.numberOfPickedScrolls == levGen.numberOfScrolls)
             {
                 SceneManager.LoadScene(loadLevel);
                 PlayerPrefs.SetInt("healthpoints", 100);
-                if (l > 3)
-                    PlayerPrefs.SetInt("level", 1);
-                else
-                PlayerPrefs.SetInt("level", PlayerPrefs.GetInt("level", 1) + 1);
                 return;
-            }
-            if (loadLevel == "Base room")
-            {
-                if (l > 3)
-                    PlayerPrefs.SetInt("level", 1);
-                SceneManager.LoadScene("Dungeon");
-                loadLevel = "Dungeon";  
             }
 
         }

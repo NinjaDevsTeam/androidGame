@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using Mono.Data.Sqlite;
 using System.Data;
+using UnityEngine.UI;
+
 public class LevelGenerator : MonoBehaviour {
 
     public static LevelGenerator generator;
@@ -14,27 +16,34 @@ public class LevelGenerator : MonoBehaviour {
     public List<Vector2> fightsPositions = new List<Vector2>();
     private int gridSizeX, gridSizeY;
     [Header("Parameters:")]
-    public int numberOfRooms = 10;
-    public int numberOfScrolls = 4;
-    public int numberOfEnemies = 2;
+    public int numberOfRooms = 20;
+    public int numberOfScrolls = 8;
+    public int numberOfEnemies = 12;
     public GameObject Top, Bottom, Left, Right, TopBottom, TopLeft, TopRight,
         BottomLeft, BottomRight, LeftRight, TopBottomLeft, TopBottomRight, TopLeftRight,
-        BottomLeftRight, TopBottomLeftRight, Scroll, Fight;
-    public static List<KeyValuePair<string, string>> vocabulary = new List<KeyValuePair<string, string>>();
+	BottomLeftRight, TopBottomLeftRight, Scroll, Fight;
+	public static List<KeyValuePair<string, string>> knownVocabulary = new List<KeyValuePair<string, string>>();
+    public static List<KeyValuePair<string, string>> vocabularyToLearn = new List<KeyValuePair<string, string>>();
+    public Text pickedWord;
+	private int lvl;
     private void Awake()
     {
         GameState gameState = GameObject.FindGameObjectWithTag("GameState").GetComponent<GameState>();
+		lvl = gameState.levelCounter;
         gameState.levelCounter++;
         if (gameState.isNewLevel)
         {
             generator = null;
             gameState.isNewLevel = false;
+
         }
         if (generator == null)
         {
+			pickedWord = GameObject.FindObjectOfType<Text> ();
             DontDestroyOnLoad(gameObject);
             generator = this;
             generator.Generate();
+            getToDB();
         }
         else if (generator != this)
         {
@@ -44,8 +53,6 @@ public class LevelGenerator : MonoBehaviour {
         print("Log: Drawing map...");
         generator.DrawMap();
         print("Log: Drawing map finished.");
-
-        getToDB();
         
     }
     private void getToDB()
@@ -56,21 +63,24 @@ public class LevelGenerator : MonoBehaviour {
         dbconn = (IDbConnection)new SqliteConnection(conn);
         dbconn.Open(); //Open connection to the database.
         IDbCommand dbcmd = dbconn.CreateCommand();
-        int level = PlayerPrefs.GetInt("level", 1);
-        string sqlQuery = "SELECT id, polish, english " + "FROM Vocabulary where id = " + level + ";";
+        int level = GameState.gameState.levelCounter;
+		string sqlQuery = "SELECT id, polish, english " + "FROM Vocabulary where id <= " + level + ";";
         print(sqlQuery);
         dbcmd.CommandText = sqlQuery;
         IDataReader reader = dbcmd.ExecuteReader();
-        int scrollsOnLevel = numberOfScrolls;
-        while (scrollsOnLevel > 0 && reader.Read())
+		if (vocabularyToLearn.Count > 0) {
+			knownVocabulary.AddRange (vocabularyToLearn.GetRange (0, numberOfScrolls));
+			vocabularyToLearn.Clear ();
+		}
+        while (reader.Read())
         {
-            int value = reader.GetInt32(0);
-            string name = reader.GetString(1);
-            string rand = reader.GetString(2);
+            int id = reader.GetInt32(0);
+            string polish = reader.GetString(1);
+            string english = reader.GetString(2);
 
-            Debug.Log("value= " + value + "  name =" + name + "  random =" + rand);
-            scrollsOnLevel--;
-            vocabulary.Add(new KeyValuePair<string, string>(name, rand));
+            Debug.Log("id = " + id + "  polish =" + polish + " english =" + english);
+			if (id == level)
+				vocabularyToLearn.Add (new KeyValuePair<string, string> (polish,english));
         }
         reader.Close();
         reader = null;
@@ -248,7 +258,8 @@ public class LevelGenerator : MonoBehaviour {
 
     void SetFightsPositions()
     {
-        SetItemPositionsList(ref fightsPositions, numberOfEnemies);
+		if(lvl > 0)
+    		SetItemPositionsList(ref fightsPositions, numberOfEnemies);
     }
 
 

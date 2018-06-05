@@ -46,6 +46,7 @@ public class BattleManager : MonoBehaviour
 	[Header( "BattleOver" )]
 	bool hasLost = false;
 
+
     //words
     string polishWord;
     string[] englishWords = new string[3];
@@ -101,15 +102,7 @@ public class BattleManager : MonoBehaviour
 	}
 
 	public void FireballAttack(){
-        int keyNumber = (int)Random.Range(0, LevelGenerator.vocabulary.Count());
-        polishWord = LevelGenerator.vocabulary[keyNumber].Key;
-        answer = (int)Random.Range(0, 3);
-        //englishWords.Add(LevelGenerator.vocabulary[keyNumber].Value);
-        //englishWords.Add(LevelGenerator.vocabulary[keyNumber -1 ].Value);
-        //englishWords.Add(LevelGenerator.vocabulary[keyNumber+1].Value);
-        englishWords[answer] = LevelGenerator.vocabulary[keyNumber].Value;
-        englishWords[(answer + 1) % 3] = LevelGenerator.vocabulary[(keyNumber + 2) % LevelGenerator.vocabulary.Count()].Value;
-        englishWords[(answer + 2) % 3] = LevelGenerator.vocabulary[(keyNumber + 1) % LevelGenerator.vocabulary.Count()].Value;
+        prepareWords();
         Button simpleAttackButton = GameObject.Find ("BasicAttackButton").GetComponent<UnityEngine.UI.Button>();
 		simpleAttackButton.enabled = false;
 
@@ -118,7 +111,34 @@ public class BattleManager : MonoBehaviour
 
 		CreateAnswer (STARTING_INDEX);
 	}
+    private void prepareWords()
+    {
 
+        int max = LevelGenerator.knownVocabulary.Count();
+        int keyNumber = (int)Random.Range(0, max);
+        polishWord = LevelGenerator.knownVocabulary[keyNumber].Key;
+        answer = (int)Random.Range(0, 3);
+        englishWords[answer] = LevelGenerator.knownVocabulary[keyNumber].Value;
+        int firstMiss;
+        int secondMiss;
+        if (keyNumber == 0)
+        {
+            firstMiss = (int)Random.Range(1, max / 2 + 1);
+            secondMiss = (int)Random.Range(max / 2 + 1, max);
+        }
+        else if (keyNumber == max - 1)
+        {
+            firstMiss = (int)Random.Range(0, max / 2);
+            secondMiss = (int)Random.Range(max / 2, max - 1);
+        }
+        else
+        {
+            firstMiss = (int)Random.Range(0, keyNumber);
+            secondMiss = (int)Random.Range(keyNumber + 1, max);
+        }
+        englishWords[(answer + 1) % 3] = LevelGenerator.knownVocabulary[firstMiss].Value;
+        englishWords[(answer + 2) % 3] = LevelGenerator.knownVocabulary[secondMiss].Value;
+    }
 	public void DragonAttack(){
 		GameObject fireball = Instantiate (DragonballPrefab);
 		fireball.name = DragonballPrefab.name;
@@ -172,6 +192,7 @@ public class BattleManager : MonoBehaviour
 		GameObject canvas = GameObject.Find("Canvas");
 		GameObject answerButton = GameObject.Find("Canvas");
 		Text buttonText;
+		bool value;
         print("GOOD ANSWER IS " + answer);
 		switch(index)
 		{
@@ -181,7 +202,7 @@ public class BattleManager : MonoBehaviour
 //			buttonText = QButton.gameObject.GetComponent<Text> ();
 //			buttonText.text = "run";
 //			Destroy (questionBall);
-			InstantiateAnswerButton(out QButton, QuestionButton, position, polishWord,  ref questionBall, ref canvas);
+			InstantiateAnswerButton(false, out QButton, QuestionButton, position, polishWord,  ref questionBall, ref canvas);
 			break;
 		case 1:
 //			FButton = Instantiate (FAButton);
@@ -190,33 +211,36 @@ public class BattleManager : MonoBehaviour
 //			AnswerButton buttonScript = FButton.gameObject.GetComponent<AnswerButton> ();
 //			buttonScript.hasGoodAnswer = true;
 //			buttonText.text = "biec";
-//			Destroy (firstBall);			
-			InstantiateAnswerButton(out FButton, FAButton, position, englishWords[0], ref firstBall, ref canvas);
-			AnswerButton buttonScript = FButton.gameObject.GetComponent<AnswerButton> ();
-            if(answer == 0)
-			    buttonScript.hasGoodAnswer = true;
+			//			Destroy (firstBall);	
+			value = answer ==0?true:false;		
+			InstantiateAnswerButton(value, out FButton, FAButton, position, englishWords[0], ref firstBall, ref canvas);
+			//answerBtn1 = FButton.gameObject.GetComponent<AnswerButton> ();
+            //if(answer == 0)
+			//   answerBtn1.hasGoodAnswer = true;
 			break;
 		case 2:
 //			SButton = Instantiate (SAButton);
 			position = new Vector3 (650, 280, 0);
 //			buttonText = SButton.gameObject.GetComponent<Text> ();
 //			buttonText.text = "kopać";
-			//			Destroy (secondBall);			
-			InstantiateAnswerButton(out SButton, SAButton, position, englishWords[1], ref secondBall, ref canvas);
-            AnswerButton buttonScript1 = FButton.gameObject.GetComponent<AnswerButton>();
-            if (answer == 1)
-                buttonScript1.hasGoodAnswer = true;
+			//			Destroy (secondBall);	
+			value = answer ==1?true:false;		
+			InstantiateAnswerButton(value, out SButton, SAButton, position, englishWords[1], ref secondBall, ref canvas);
+            //AnswerButton buttonScript1 = FButton.gameObject.GetComponent<AnswerButton>();
+           // if (answer == 1)
+            //    answerBtn2.hasGoodAnswer = true;
             break;
 		case 3:
 //			TButton = Instantiate (TAButton);
 			position = new Vector3 (650, 130, 0);
 //			buttonText = TButton.gameObject.GetComponent<Text> ();
 //			buttonText.text = "pokazywać";
-			//			Destroy (thirdBall);	
-			InstantiateAnswerButton(out TButton, TAButton, position, englishWords[2], ref thirdBall, ref canvas);
-            AnswerButton buttonScript2 = FButton.gameObject.GetComponent<AnswerButton>();
-            if (answer == 2)
-                buttonScript2.hasGoodAnswer = true;
+			//			Destroy (thirdBall);
+			value = answer ==2?true:false;
+			InstantiateAnswerButton(value, out TButton, TAButton, position, englishWords[2], ref thirdBall, ref canvas);
+           // AnswerButton buttonScript2 = FButton.gameObject.GetComponent<AnswerButton>();
+            //if (answer == 2)
+		//		answerBtn3.hasGoodAnswer = true;
             break;
 		}
 		/*answerButton.transform.SetParent(canvas.transform);
@@ -226,11 +250,13 @@ public class BattleManager : MonoBehaviour
 		ABAnimator.Play ("Answer_Button_Show");*/
 	}
 
-	private void InstantiateAnswerButton(out GameObject button, GameObject submittedButton, Vector3 position, string text,  ref GameObject ball, ref GameObject canvas)
+	private void InstantiateAnswerButton(bool value, out GameObject button, GameObject submittedButton, Vector3 position, string text,  ref GameObject ball, ref GameObject canvas)
 	{
 		button = Instantiate (submittedButton);
 		button.transform.position = position;
 		Button btn = button.gameObject.GetComponent<Button> ();
+		AnswerButton answerBut = btn.gameObject.GetComponent<AnswerButton> ();
+		answerBut.hasGoodAnswer = value;
 		btn.onClick.AddListener (CheckIfGoodButtonClicked);
 		Text buttonText = button.gameObject.GetComponentInChildren<Text> ();
 		buttonText.text = text;
@@ -240,6 +266,7 @@ public class BattleManager : MonoBehaviour
 		Animation ABAnimation = button.GetComponent<Animation> ();
 		ABAnimation.enabled = true;
 		ABAnimator.Play ("Answer_Button_Show");
+		//(QuestionButton as Button).enabled = false;
 	}
 
 	private IEnumerator WaitForAnimationEnd(Animator animator, string animationName, int index)
@@ -266,6 +293,14 @@ public class BattleManager : MonoBehaviour
 	{
 		GameObject buttonClicked = EventSystem.current.currentSelectedGameObject;
 		AnswerButton buttonScript = buttonClicked.GetComponent<AnswerButton> ();
+		switch (answer) {
+		case 0:
+			break;
+		case 1:
+			break;
+		case 2:
+			break;
+		}
 		if (buttonScript.hasGoodAnswer) {
 			GameObject fireball = Instantiate (BigFireballPrefab);
 			fireball.name = BigFireballPrefab.name;
