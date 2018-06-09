@@ -21,7 +21,7 @@ public class MoveScene : MonoBehaviour
 				GameObject.FindGameObjectWithTag("LevelGenerator").GetComponent<LevelGenerator>();
 			if (loadLevel == "Base room" && ScrollScript.numberOfPickedScrolls == levGen.numberOfScrolls)
             {
-                SceneManager.LoadScene(loadLevel);
+				SceneManager.LoadScene(loadLevel);
                 PlayerPrefs.SetInt("healthpoints", 100);
                 return;
             }

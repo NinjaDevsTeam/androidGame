@@ -6,6 +6,7 @@ using UnityEngine.UI;
 public class ScrollScript : MonoBehaviour
 {
     public static int numberOfPickedScrolls = 0;
+
     private void OnTriggerEnter2D(Collider2D other)
     {
         if (other.CompareTag("Player"))
@@ -21,6 +22,7 @@ public class ScrollScript : MonoBehaviour
 				AudioClip clip = Resources.Load<AudioClip>(english);
 				if(clip!=null)
 					AudioSource.PlayClipAtPoint(clip,transform.position);
+				//var textObj = Object.FindObjectWithTag("WordText");
 				var textObj = GameObject.FindObjectOfType<Text>();
                 textObj.text = english + " - " + LevelGenerator.vocabularyToLearn[numberOfPickedScrolls].Key;
 				StartCoroutine(func(textObj));

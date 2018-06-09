@@ -24,26 +24,24 @@ public class LevelGenerator : MonoBehaviour {
 	BottomLeftRight, TopBottomLeftRight, Scroll, Fight;
 	public static List<KeyValuePair<string, string>> knownVocabulary = new List<KeyValuePair<string, string>>();
     public static List<KeyValuePair<string, string>> vocabularyToLearn = new List<KeyValuePair<string, string>>();
-    public Text pickedWord;
 	private int lvl;
     private void Awake()
     {
         GameState gameState = GameObject.FindGameObjectWithTag("GameState").GetComponent<GameState>();
 		lvl = gameState.levelCounter;
-        gameState.levelCounter++;
+
         if (gameState.isNewLevel)
         {
             generator = null;
             gameState.isNewLevel = false;
-
+			gameState.levelCounter++;
         }
         if (generator == null)
         {
-			pickedWord = GameObject.FindObjectOfType<Text> ();
             DontDestroyOnLoad(gameObject);
             generator = this;
             generator.Generate();
-            getToDB();
+			getToDB(gameState);
         }
         else if (generator != this)
         {
@@ -55,7 +53,7 @@ public class LevelGenerator : MonoBehaviour {
         print("Log: Drawing map finished.");
         
     }
-    private void getToDB()
+	private void getToDB(GameState gameState)
     {
         string conn = "URI=file:" + Application.dataPath + "/Database/Vocabulary.db"; //Path to database.
         IDbConnection dbconn;
@@ -63,7 +61,7 @@ public class LevelGenerator : MonoBehaviour {
         dbconn = (IDbConnection)new SqliteConnection(conn);
         dbconn.Open(); //Open connection to the database.
         IDbCommand dbcmd = dbconn.CreateCommand();
-        int level = GameState.gameState.levelCounter;
+       int level = gameState.levelCounter;
 		string sqlQuery = "SELECT id, polish, english " + "FROM Vocabulary where id <= " + level + ";";
         print(sqlQuery);
         dbcmd.CommandText = sqlQuery;
@@ -79,8 +77,8 @@ public class LevelGenerator : MonoBehaviour {
             string english = reader.GetString(2);
 
             Debug.Log("id = " + id + "  polish =" + polish + " english =" + english);
-			if (id == level)
-				vocabularyToLearn.Add (new KeyValuePair<string, string> (polish,english));
+			if (id == level) 
+				vocabularyToLearn.Add (new KeyValuePair<string, string> (polish, english));
         }
         reader.Close();
         reader = null;
@@ -233,7 +231,7 @@ public class LevelGenerator : MonoBehaviour {
     void SetItemPositionsList(ref List<Vector2> positions, int limit)
     {
         SortedList<float, Vector2> permutatedPositions = new SortedList<float, Vector2>();
-        print("Debug: " + takenPositions.Count);
+		Debug.Log("Debug: " + takenPositions.Count);
         foreach (var position in takenPositions)
             permutatedPositions.Add(Random.value, position);
         print("Debug: " + permutatedPositions.Count);
@@ -253,13 +251,13 @@ public class LevelGenerator : MonoBehaviour {
 
     void SetScrollsPositions()
     {
-        SetItemPositionsList(ref scrollsPositions, numberOfScrolls);
+        SetItemPositionsList(ref generator.scrollsPositions, numberOfScrolls);
     }
 
     void SetFightsPositions()
     {
-		if(lvl > 0)
-    		SetItemPositionsList(ref fightsPositions, numberOfEnemies);
+		//if(lvl > 0)
+    		SetItemPositionsList(ref generator.fightsPositions, numberOfEnemies);
     }
 
 
@@ -322,9 +320,9 @@ public class LevelGenerator : MonoBehaviour {
                     break;
             }
         }
-        foreach (var position in scrollsPositions)
+        foreach (var position in generator.scrollsPositions)
             Instantiate(Scroll, position, Quaternion.identity);
-        foreach (var position in fightsPositions)
+        foreach (var position in generator.fightsPositions)
             Instantiate(Fight, position, Quaternion.identity);
     }
 }

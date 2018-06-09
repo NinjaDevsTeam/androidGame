@@ -43,10 +43,9 @@ public class LevelTitle : MonoBehaviour
 
             if (fadeGroup.alpha >= 1)
             {
-                if (gameState.levelCounter != 0)
-                    gameState.isNewLevel = true; 
-
-                SceneManager.LoadScene("Dungeon");
+                //if (gameState.levelCounter != 0)
+                    gameState.isNewLevel = true;  
+            	SceneManager.LoadScene("Dungeon");
             }
         }
     }

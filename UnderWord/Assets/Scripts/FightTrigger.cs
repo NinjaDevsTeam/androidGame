@@ -22,8 +22,7 @@ public class FightTrigger : MonoBehaviour {
                 GameObject.FindGameObjectWithTag("LevelGenerator").GetComponent<LevelGenerator>();
             levGen.fightsPositions.Remove(gameObject.transform.position);
             Destroy(gameObject);
-            SceneManager.LoadScene(loadLevel);
-            
+            SceneManager.LoadScene(loadLevel);            
         }
     }
 }

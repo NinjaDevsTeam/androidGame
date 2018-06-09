@@ -15,14 +15,13 @@ public class GameState : MonoBehaviour {
     private void Awake()
     {
         if (gameState == null)
-        {
-           
+        {           
             DontDestroyOnLoad(gameObject);
             gameState = this;
         }
         else if (gameState != this)
         {
-            Destroy(gameObject);
+			Destroy(gameObject);
         }
     }
 }
