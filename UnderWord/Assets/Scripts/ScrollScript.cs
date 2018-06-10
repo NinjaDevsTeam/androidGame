@@ -14,9 +14,8 @@ public class ScrollScript : MonoBehaviour
             try
             {
                 
-                LevelGenerator levGen =
-                GameObject.FindGameObjectWithTag("LevelGenerator").GetComponent<LevelGenerator>();
-                levGen.scrollsPositions.Remove(gameObject.transform.position);
+               
+                LevelGenerator.generator.scrollsPositions.Remove(gameObject.transform.position);
                 string english = LevelGenerator.vocabularyToLearn[numberOfPickedScrolls].Value;
 			
 				AudioClip clip = Resources.Load<AudioClip>(english);

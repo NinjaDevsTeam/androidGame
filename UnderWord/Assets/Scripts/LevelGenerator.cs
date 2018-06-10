@@ -4,6 +4,8 @@ using UnityEngine;
 using Mono.Data.Sqlite;
 using System.Data;
 using UnityEngine.UI;
+using System;
+using System.IO;
 
 public class LevelGenerator : MonoBehaviour {
 
@@ -25,7 +27,7 @@ public class LevelGenerator : MonoBehaviour {
 	public static List<KeyValuePair<string, string>> knownVocabulary = new List<KeyValuePair<string, string>>();
     public static List<KeyValuePair<string, string>> vocabularyToLearn = new List<KeyValuePair<string, string>>();
 	private int lvl;
-    private void Awake()
+    private void Start()
     {
         GameState gameState = GameObject.FindGameObjectWithTag("GameState").GetComponent<GameState>();
 		lvl = gameState.levelCounter;
@@ -33,14 +35,36 @@ public class LevelGenerator : MonoBehaviour {
         if (gameState.isNewLevel)
         {
             generator = null;
+            if(lvl == 0)
+            {
+                numberOfRooms = 4;
+                numberOfScrolls = 3;
+                numberOfEnemies = 0;
+            }
+            else
+            {
+                numberOfRooms = lvl / 5 + 7;
+                numberOfEnemies = lvl / 5 + 2;
+                numberOfScrolls = 5;
+            }
             gameState.isNewLevel = false;
 			gameState.levelCounter++;
+            GameObject player = GameObject.FindGameObjectWithTag("Player");
+            player.transform.position = new Vector2(0, 0);
         }
         if (generator == null)
         {
             DontDestroyOnLoad(gameObject);
             generator = this;
-            generator.Generate();
+            try
+            {
+                generator.Generate();
+            }
+            catch(Exception ex)
+            {
+                Debug.Log(ex.Message);
+                System.Diagnostics.Debug.WriteLine(ex.Message);
+            }
 			getToDB(gameState);
         }
         else if (generator != this)
@@ -53,39 +77,51 @@ public class LevelGenerator : MonoBehaviour {
         print("Log: Drawing map finished.");
         
     }
-	private void getToDB(GameState gameState)
+    private void getToDB(GameState gameState)
     {
-        string conn = "URI=file:" + Application.dataPath + "/Database/Vocabulary.db"; //Path to database.
-        IDbConnection dbconn;
-        print(conn);
-        dbconn = (IDbConnection)new SqliteConnection(conn);
-        dbconn.Open(); //Open connection to the database.
-        IDbCommand dbcmd = dbconn.CreateCommand();
-       int level = gameState.levelCounter;
-		string sqlQuery = "SELECT id, polish, english " + "FROM Vocabulary where id <= " + level + ";";
-        print(sqlQuery);
-        dbcmd.CommandText = sqlQuery;
-        IDataReader reader = dbcmd.ExecuteReader();
-		if (vocabularyToLearn.Count > 0) {
-			knownVocabulary.AddRange (vocabularyToLearn.GetRange (0, numberOfScrolls));
-			vocabularyToLearn.Clear ();
-		}
-        while (reader.Read())
+        string filepath = Application.persistentDataPath + "/Vocabulary.db"; //Path to database
+        print(filepath);
+        if(!File.Exists(filepath))
         {
-            int id = reader.GetInt32(0);
-            string polish = reader.GetString(1);
-            string english = reader.GetString(2);
+            WWW loadDB = new WWW("jar:file://" + Application.dataPath + "!/assets/Vocabulary.db");
+            while (!loadDB.isDone) { }
 
-            Debug.Log("id = " + id + "  polish =" + polish + " english =" + english);
-			if (id == level) 
-				vocabularyToLearn.Add (new KeyValuePair<string, string> (polish, english));
+            File.WriteAllBytes(filepath, loadDB.bytes);
         }
-        reader.Close();
-        reader = null;
-        dbcmd.Dispose();
-        dbcmd = null;
-        dbconn.Close();
-        dbconn = null;
+        string conn = "URI=file:" + filepath;
+        using (var dbconn = new SqliteConnection(conn))
+        {
+
+            dbconn.Open(); //Open connection to the database.
+            
+            using (var dbcmd = dbconn.CreateCommand())
+            {
+                int level = gameState.levelCounter;
+                string sqlQuery = "SELECT id, polish, english " + "FROM Vocabulary where id <= " + level + ";";
+                print(sqlQuery);
+                dbcmd.CommandText = sqlQuery;
+                using (var reader = dbcmd.ExecuteReader())
+                {
+                    if (vocabularyToLearn.Count > 0)
+                    {
+                        knownVocabulary.AddRange(vocabularyToLearn.GetRange(0, numberOfScrolls));
+                        vocabularyToLearn.Clear();
+                    }
+                    while (reader.Read())
+                    {
+                        int id = reader.GetInt32(0);
+                        string polish = reader.GetString(1);
+                        string english = reader.GetString(2);
+
+                        Debug.Log("id = " + id + "  polish =" + polish + " english =" + english);
+                        if (id == level)
+                            vocabularyToLearn.Add(new KeyValuePair<string, string>(polish, english));
+                    }
+                }
+            }
+        }
+        
+        
     }
     private void Generate()
     {
@@ -122,7 +158,7 @@ public class LevelGenerator : MonoBehaviour {
 
             checkPos = NewPosition();
 
-            if(NumberOfNeighbours(checkPos, takenPositions) > 1 && Random.value > randomCompare)
+            if(NumberOfNeighbours(checkPos, takenPositions) > 1 && UnityEngine.Random.value > randomCompare)
             {
                 int it = 0;
                 do
@@ -143,11 +179,11 @@ public class LevelGenerator : MonoBehaviour {
         Vector2 checkingPos = Vector2.zero;
         do
         {
-            int index = Mathf.RoundToInt(Random.value * (takenPositions.Count - 1));
+            int index = Mathf.RoundToInt(UnityEngine.Random.value * (takenPositions.Count - 1));
             x = (int)takenPositions[index].x;
             y = (int)takenPositions[index].y;
-            bool upDown = (Random.value < 0.5f);
-            bool positive = (Random.value < 0.5f);
+            bool upDown = (UnityEngine.Random.value < 0.5f);
+            bool positive = (UnityEngine.Random.value < 0.5f);
             if (upDown)
             {
                 if (positive) y++;
@@ -173,14 +209,14 @@ public class LevelGenerator : MonoBehaviour {
             inc = 0;
             do
             {
-                index = Mathf.RoundToInt(Random.value * (takenPositions.Count - 1));
+                index = Mathf.RoundToInt(UnityEngine.Random.value * (takenPositions.Count - 1));
                 inc++;
             } while (NumberOfNeighbours(takenPositions[index], takenPositions) > 1 && inc < 100);
             
             x = (int)takenPositions[index].x;
             y = (int)takenPositions[index].y;
-            bool upDown = (Random.value < 0.5f);
-            bool positive = (Random.value < 0.5f);
+            bool upDown = (UnityEngine.Random.value < 0.5f);
+            bool positive = (UnityEngine.Random.value < 0.5f);
             if (upDown)
             {
                 if (positive) y++;
@@ -233,7 +269,7 @@ public class LevelGenerator : MonoBehaviour {
         SortedList<float, Vector2> permutatedPositions = new SortedList<float, Vector2>();
 		Debug.Log("Debug: " + takenPositions.Count);
         foreach (var position in takenPositions)
-            permutatedPositions.Add(Random.value, position);
+            permutatedPositions.Add(UnityEngine.Random.value, position);
         print("Debug: " + permutatedPositions.Count);
         for (int i = 0; i < limit; i++)
         {
@@ -263,6 +299,7 @@ public class LevelGenerator : MonoBehaviour {
 
     private void DrawMap()
     {
+        GameObject obj;
         print("Log: Number of rooms: "+takenPositions.Count);
         foreach(Vector2 position in takenPositions)
         {
@@ -274,55 +311,94 @@ public class LevelGenerator : MonoBehaviour {
             switch (room.doorType)
             {
                 case DoorType.Bottom:
-                    Instantiate(Bottom, drawPos, Quaternion.identity);
+                    obj = GameObject.Instantiate(Resources.Load<GameObject>("Bottom")) as GameObject;
+                    obj.transform.position = drawPos;
+                    //Instantiate(Bottom, drawPos, Quaternion.identity);
                     break;
                 case DoorType.BottomLeft:
-                    Instantiate(BottomLeft, drawPos, Quaternion.identity);
+                    obj = GameObject.Instantiate(Resources.Load<GameObject>("BottomLeft")) as GameObject;
+                    obj.transform.position = drawPos;
+                    //Instantiate(BottomLeft, drawPos, Quaternion.identity);
                     break;
                 case DoorType.BottomLeftRight:
-                    Instantiate(BottomLeftRight, drawPos, Quaternion.identity);
+                    obj = GameObject.Instantiate(Resources.Load<GameObject>("BottomLeftRight")) as GameObject;
+                    obj.transform.position = drawPos;
+                    //Instantiate(BottomLeftRight, drawPos, Quaternion.identity);
                     break;
                 case DoorType.BottomRight:
-                    Instantiate(BottomRight, drawPos, Quaternion.identity);
+                    obj = GameObject.Instantiate(Resources.Load<GameObject>("BottomRight")) as GameObject;
+                    obj.transform.position = drawPos;
+                    //Instantiate(BottomRight, drawPos, Quaternion.identity);
                     break;
                 case DoorType.Left:
-                    Instantiate(Left, drawPos, Quaternion.identity);
+                    obj = GameObject.Instantiate(Resources.Load<GameObject>("Left")) as GameObject;
+                    obj.transform.position = drawPos;
+                    //Instantiate(Left, drawPos, Quaternion.identity);
                     break;
                 case DoorType.LeftRight:
-                    Instantiate(LeftRight, drawPos, Quaternion.identity);
+                    obj = GameObject.Instantiate(Resources.Load<GameObject>("LeftRight")) as GameObject;
+                    obj.transform.position = drawPos;
+                    //Instantiate(LeftRight, drawPos, Quaternion.identity);
                     break;
                 case DoorType.Right:
-                    Instantiate(Right, drawPos, Quaternion.identity);
+                    obj = GameObject.Instantiate(Resources.Load<GameObject>("Right")) as GameObject;
+                    obj.transform.position = drawPos;
+                    //Instantiate(Right, drawPos, Quaternion.identity);
                     break;
                 case DoorType.Top:
-                    Instantiate(Top, drawPos, Quaternion.identity);
+                    obj = GameObject.Instantiate(Resources.Load<GameObject>("Top")) as GameObject;
+                    obj.transform.position = drawPos;
+                    //Instantiate(Top, drawPos, Quaternion.identity);
                     break;
                 case DoorType.TopBottom:
-                    Instantiate(TopBottom, drawPos, Quaternion.identity);
+                    obj = GameObject.Instantiate(Resources.Load<GameObject>("TopBottom")) as GameObject;
+                    obj.transform.position = drawPos;
+                    //Instantiate(TopBottom, drawPos, Quaternion.identity);
                     break;
                 case DoorType.TopBottomLeft:
-                    Instantiate(TopBottomLeft, drawPos, Quaternion.identity);
+                    obj = GameObject.Instantiate(Resources.Load<GameObject>("TopBottomLeft")) as GameObject;
+                    obj.transform.position = drawPos;
+                    //Instantiate(TopBottomLeft, drawPos, Quaternion.identity);
                     break;
                 case DoorType.TopBottomLeftRight:
-                    Instantiate(TopBottomLeftRight, drawPos, Quaternion.identity);
+                    obj = GameObject.Instantiate(Resources.Load<GameObject>("TopBottomLeftRight")) as GameObject;
+                    obj.transform.position = drawPos;
+                    //Instantiate(TopBottomLeftRight, drawPos, Quaternion.identity);
                     break;
                 case DoorType.TopBottomRight:
-                    Instantiate(TopBottomRight, drawPos, Quaternion.identity);
+                    obj = GameObject.Instantiate(Resources.Load<GameObject>("TopBottomRight")) as GameObject;
+                    obj.transform.position = drawPos;
+                    //Instantiate(TopBottomRight, drawPos, Quaternion.identity);
                     break;
                 case DoorType.TopLeft:
-                    Instantiate(TopLeft, drawPos, Quaternion.identity);
+                    obj = GameObject.Instantiate(Resources.Load<GameObject>("TopLeft")) as GameObject;
+                    obj.transform.position = drawPos;
+                    //Instantiate(TopLeft, drawPos, Quaternion.identity);
                     break;
                 case DoorType.TopLeftRight:
-                    Instantiate(TopLeftRight, drawPos, Quaternion.identity);
+                    obj = GameObject.Instantiate(Resources.Load<GameObject>("TopLeftRight")) as GameObject;
+                    obj.transform.position = drawPos;
+                    //Instantiate(TopLeftRight, drawPos, Quaternion.identity);
                     break;
                 case DoorType.TopRight:
-                    Instantiate(TopRight, drawPos, Quaternion.identity);
+                    obj = GameObject.Instantiate(Resources.Load<GameObject>("TopRight")) as GameObject;
+                    obj.transform.position = drawPos;
+                    //Instantiate(TopRight, drawPos, Quaternion.identity);
                     break;
             }
         }
         foreach (var position in generator.scrollsPositions)
-            Instantiate(Scroll, position, Quaternion.identity);
+        {
+            obj = GameObject.Instantiate(Resources.Load<GameObject>("Scroll")) as GameObject;
+            obj.transform.position = position;
+            //Instantiate(Scroll, position, Quaternion.identity);
+        }
         foreach (var position in generator.fightsPositions)
-            Instantiate(Fight, position, Quaternion.identity);
+        {
+            obj = GameObject.Instantiate(Resources.Load<GameObject>("FightTrigger")) as GameObject;
+            obj.transform.position = position;
+            print("Instantiated fight trigger at position: (" + position.x + "," + position.y + ")");
+            //Instantiate(Fight, position, Quaternion.identity);
+        }
     }
 }

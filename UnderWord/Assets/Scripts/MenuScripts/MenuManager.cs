@@ -12,6 +12,7 @@ public class MenuManager : MonoBehaviour {
 
 	public void PlayGame()
 	{
+        GameState gameState = GameObject.FindGameObjectWithTag("GameState").GetComponent<GameState>();
 		SceneManager.LoadScene ("Level Title");
 	}
 }

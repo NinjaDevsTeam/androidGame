@@ -18,10 +18,17 @@ public class GameState : MonoBehaviour {
         {           
             DontDestroyOnLoad(gameObject);
             gameState = this;
+            PlayerPrefs.SetInt("healthpoints", 5);
         }
         else if (gameState != this)
         {
 			Destroy(gameObject);
         }
+    }
+
+    public void Clear()
+    {
+        if (gameState != null)
+            gameState = null;
     }
 }

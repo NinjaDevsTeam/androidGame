@@ -12,7 +12,8 @@ public class MoveScene : MonoBehaviour
     {
         if(other.CompareTag("Player"))
         {
-			if (loadLevel == "Level Title") {
+            PlayerPrefs.SetInt("healthpoints", 5);
+            if (loadLevel == "Level Title") {
 				ScrollScript.numberOfPickedScrolls = 0;
 				SceneManager.LoadScene (loadLevel);
 				return;
@@ -22,7 +23,7 @@ public class MoveScene : MonoBehaviour
 			if (loadLevel == "Base room" && ScrollScript.numberOfPickedScrolls == levGen.numberOfScrolls)
             {
 				SceneManager.LoadScene(loadLevel);
-                PlayerPrefs.SetInt("healthpoints", 100);
+                PlayerPrefs.SetInt("healthpoints", 5);
                 return;
             }
 

@@ -19,12 +19,12 @@ public class SoundButton : MonoBehaviour {
         if (soundToggle)
         {
             AudioListener.pause = true;
-            gameObject.GetComponentInChildren<Text>().text = "Sound: Off";
+            gameObject.GetComponentInChildren<Text>().text = "Dźwięk: Włącz";
         }
         else
         {
             AudioListener.pause = false;
-            gameObject.GetComponentInChildren<Text>().text = "Sound: On";
+            gameObject.GetComponentInChildren<Text>().text = "Dźwięk: Wyłącz";
         }
     }
 }

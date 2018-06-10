@@ -18,9 +18,7 @@ public class FightTrigger : MonoBehaviour {
             gameState.playerCameraPosition = new Vector2(player.transform.position.x,
                 player.transform.position.y);
             gameState.isSet = true;
-            LevelGenerator levGen =
-                GameObject.FindGameObjectWithTag("LevelGenerator").GetComponent<LevelGenerator>();
-            levGen.fightsPositions.Remove(gameObject.transform.position);
+            LevelGenerator.generator.fightsPositions.Remove(gameObject.transform.position);
             Destroy(gameObject);
             SceneManager.LoadScene(loadLevel);            
         }

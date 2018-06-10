@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
+using UnityEngine.SceneManagement;
 
 public class PlayerController : MonoBehaviour {
 
@@ -58,7 +59,7 @@ public class PlayerController : MonoBehaviour {
 					healthBar.UpdateBar( currentHealth, maxHealth );
 					ninjaAnimator.Play ("Ninja_Hurt");
 
-                    PlayerPrefs.SetInt("healthpoints", currentHealth);			
+                    //PlayerPrefs.SetInt("healthpoints", currentHealth);			
                 }
             }
 		}
@@ -71,6 +72,7 @@ public class PlayerController : MonoBehaviour {
 		yield return new WaitForSeconds(animationLength-0.2f);
 
 		ShowBattleResult ();
+        SceneManager.LoadScene("Menu");
 	}
 
 	IEnumerator ShakeCamera ()
