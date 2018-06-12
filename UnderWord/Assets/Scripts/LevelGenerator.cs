@@ -386,6 +386,7 @@ public class LevelGenerator : MonoBehaviour {
                     //Instantiate(TopRight, drawPos, Quaternion.identity);
                     break;
             }
+            InstantiateSurroundings(x, y);
         }
         foreach (var position in generator.scrollsPositions)
         {
@@ -401,4 +402,58 @@ public class LevelGenerator : MonoBehaviour {
             //Instantiate(Fight, position, Quaternion.identity);
         }
     }
+
+    private void InstantiateSurroundings(int x, int y)
+    {
+        GameObject obj;
+        if (x - 1 >= 0 && rooms[x - 1, y] == null)
+        {
+            Vector2 tmp = new Vector2((rooms[x, y].position.x - 1) * 11, rooms[x, y].position.y * 11);
+            obj = GameObject.Instantiate(Resources.Load<GameObject>("Surroundings")) as GameObject;
+            obj.transform.position = tmp;
+        }
+        if (x - 1 >= 0 && y - 1 >= 0 && rooms[x - 1, y - 1] == null)
+        {
+            Vector2 tmp = new Vector2((rooms[x, y].position.x - 1) * 11, (rooms[x, y].position.y - 1) * 11);
+            obj = GameObject.Instantiate(Resources.Load<GameObject>("Surroundings")) as GameObject;
+            obj.transform.position = tmp;
+        }
+        if (y - 1 >= 0 && rooms[x, y - 1] == null)
+        {
+            Vector2 tmp = new Vector2(rooms[x, y].position.x * 11, (rooms[x, y].position.y - 1) * 11);
+            obj = GameObject.Instantiate(Resources.Load<GameObject>("Surroundings")) as GameObject;
+            obj.transform.position = tmp;
+        }
+        if (x + 1 < gridSizeX * 2 && y - 1 >= 0 && rooms[x + 1, y - 1] == null)
+        {
+            Vector2 tmp = new Vector2((rooms[x, y].position.x + 1) * 11, (rooms[x, y].position.y - 1) * 11);
+            obj = GameObject.Instantiate(Resources.Load<GameObject>("Surroundings")) as GameObject;
+            obj.transform.position = tmp;
+        }
+        if (x + 1 < gridSizeX * 2 && rooms[x + 1, y] == null)
+        {
+            Vector2 tmp = new Vector2((rooms[x, y].position.x + 1) * 11, rooms[x, y].position.y * 11);
+            obj = GameObject.Instantiate(Resources.Load<GameObject>("Surroundings")) as GameObject;
+            obj.transform.position = tmp;
+        }
+        if (x + 1 < gridSizeX * 2 && y + 1 < gridSizeY * 2 && rooms[x + 1, y + 1] == null)
+        {
+            Vector2 tmp = new Vector2((rooms[x, y].position.x + 1) * 11, (rooms[x, y].position.y + 1) * 11);
+            obj = GameObject.Instantiate(Resources.Load<GameObject>("Surroundings")) as GameObject;
+            obj.transform.position = tmp;
+        }
+        if (y + 1 < gridSizeY * 2 && rooms[x, y + 1] == null)
+        {
+            Vector2 tmp = new Vector2(rooms[x, y].position.x * 11, rooms[x, y].position.y * 11);
+            obj = GameObject.Instantiate(Resources.Load<GameObject>("Surroundings")) as GameObject;
+            obj.transform.position = tmp;
+        }
+        if (x - 1 >= 0 && y + 1 < gridSizeY * 2 && rooms[x - 1, y + 1] == null)
+        {
+            Vector2 tmp = new Vector2((rooms[x, y].position.x - 1) * 11, (rooms[x, y].position.y + 1) * 11);
+            obj = GameObject.Instantiate(Resources.Load<GameObject>("Surroundings")) as GameObject;
+            obj.transform.position = tmp;
+        }
+    }
+
 }
