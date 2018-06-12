@@ -21,10 +21,17 @@ public class ScrollScript : MonoBehaviour
 				AudioClip clip = Resources.Load<AudioClip>(english);
 				if(clip!=null)
 					AudioSource.PlayClipAtPoint(clip,transform.position);
-				//var textObj = Object.FindObjectWithTag("WordText");
-				var textObj = GameObject.FindObjectOfType<Text>();
-                textObj.text = english + " - " + LevelGenerator.vocabularyToLearn[numberOfPickedScrolls].Key;
-				StartCoroutine(func(textObj));
+                //var textObj = Object.FindObjectWithTag("WordText");
+                var textTab = Object.FindObjectsOfType<Text>();
+                foreach(var text in textTab)
+                {
+                    if(text.name == "WordText")
+                    {
+                        text.text = english + " - " + LevelGenerator.vocabularyToLearn[numberOfPickedScrolls].Key;
+                        StartCoroutine(func(text));
+                    }
+                }
+                
                 print("zebrane slowko: " + LevelGenerator.vocabularyToLearn[numberOfPickedScrolls].Value.ToUpper() + " means: " + LevelGenerator.vocabularyToLearn[numberOfPickedScrolls].Key.ToUpper());
                 numberOfPickedScrolls++;
                 print("liczba zebranych slow : " + numberOfPickedScrolls);
