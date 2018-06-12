@@ -13,14 +13,13 @@ public class MoveScene : MonoBehaviour
         if(other.CompareTag("Player"))
         {
             PlayerPrefs.SetInt("healthpoints", 5);
-            if (loadLevel == "Level Title") {
-				ScrollScript.numberOfPickedScrolls = 0;
-				SceneManager.LoadScene (loadLevel);
-				return;
-			}
-			LevelGenerator levGen =
-				GameObject.FindGameObjectWithTag("LevelGenerator").GetComponent<LevelGenerator>();
-			if (loadLevel == "Base room" && ScrollScript.numberOfPickedScrolls == levGen.numberOfScrolls)
+            if (loadLevel == "Level Title")
+            {
+                ScrollScript.numberOfPickedScrolls = 0;
+                SceneManager.LoadScene(loadLevel);
+                return;
+            }
+			if (loadLevel == "Base room" && ScrollScript.numberOfPickedScrolls == LevelGenerator.generator.numberOfScrolls)
             {
 				SceneManager.LoadScene(loadLevel);
                 PlayerPrefs.SetInt("healthpoints", 5);
