@@ -6,6 +6,7 @@ using UnityEngine.UI;
 public class ScrollScript : MonoBehaviour
 {
     public static int numberOfPickedScrolls = 0;
+	GameObject wordButton;
 	Text textObj;
     private void OnTriggerEnter2D(Collider2D other)
     {
@@ -14,12 +15,14 @@ public class ScrollScript : MonoBehaviour
             try
 			{
 				LevelGenerator.generator.scrollsPositions.Remove(gameObject.transform.position);
-				textObj = GameObject.FindObjectOfType<Text>();
-				string english = null;
+				wordButton = GameObject.Find("WordButton");
+				textObj = (Text)wordButton.gameObject.GetComponentInChildren(typeof(Text));
+				string english = null, polish = null;
 				bool sqlDoesntWork = false;
 				try
 				{
 					english = LevelGenerator.vocabularyToLearn[numberOfPickedScrolls].Value;
+					polish = LevelGenerator.vocabularyToLearn[numberOfPickedScrolls].Key;
 				}
 				catch
 				{
@@ -27,7 +30,8 @@ public class ScrollScript : MonoBehaviour
 				}
 				if(sqlDoesntWork)
 				{
-					textObj.text = "bardzo dlugi tekst sprawdzajacy zawijanie";
+					textObj.text = "Your last collected word:\n" + english + " \n-\n" + polish;
+					LevelGenerator.knownVocabulary.Add(new KeyValuePair<string, string>(polish, english));
 					//StartCoroutine(func(textObj));
 					//Invoke("Dissappear",2f);
 				}
@@ -36,7 +40,8 @@ public class ScrollScript : MonoBehaviour
 					AudioClip clip = Resources.Load<AudioClip>(english);
 					if(clip!=null)
 						AudioSource.PlayClipAtPoint(clip,transform.position);
-	                textObj.text = english + " - " + LevelGenerator.vocabularyToLearn[numberOfPickedScrolls].Key;
+					textObj.text = "Your last collected word:\n" + english + " \n-\n" + polish;
+					LevelGenerator.knownVocabulary.Add(new KeyValuePair<string, string>(polish, english));
 					StartCoroutine(func(textObj));
 	                print("zebrane slowko: " + LevelGenerator.vocabularyToLearn[numberOfPickedScrolls].Value.ToUpper() + " means: " + LevelGenerator.vocabularyToLearn[numberOfPickedScrolls].Key.ToUpper());
 				}

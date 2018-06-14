@@ -32,6 +32,8 @@ public class LevelGenerator : MonoBehaviour {
         GameState gameState = GameObject.FindGameObjectWithTag("GameState").GetComponent<GameState>();
 		lvl = gameState.levelCounter;
 
+		seedVocabulary ();
+
         if (gameState.isNewLevel)
         {
             generator = null;
@@ -77,6 +79,30 @@ public class LevelGenerator : MonoBehaviour {
         print("Log: Drawing map finished.");
         
     }
+
+	private void seedVocabulary()
+	{
+		vocabularyToLearn.Add(new KeyValuePair<String, String>("biec" , "run"));
+		vocabularyToLearn.Add(new KeyValuePair<String, String>("iść", "go"));
+		vocabularyToLearn.Add(new KeyValuePair<String, String>("atakować", "attack"));
+		vocabularyToLearn.Add(new KeyValuePair<String, String>("pies", "dog"));
+		vocabularyToLearn.Add(new KeyValuePair<String, String>("kot", "cat"));
+		vocabularyToLearn.Add(new KeyValuePair<String, String>("papuga", "parrot"));
+		vocabularyToLearn.Add(new KeyValuePair<String, String>("koń", "horse"));
+		vocabularyToLearn.Add(new KeyValuePair<String, String>("mysz", "mouse"));
+		vocabularyToLearn.Add(new KeyValuePair<String, String>("homar", "lobster"));
+		vocabularyToLearn.Add(new KeyValuePair<String, String>("masło", "butter"));
+		vocabularyToLearn.Add(new KeyValuePair<String, String>("ser", "cheese"));
+		vocabularyToLearn.Add(new KeyValuePair<String, String>("szynka", "ham"));
+		vocabularyToLearn.Add(new KeyValuePair<String, String>("drewno", "wood"));
+		vocabularyToLearn.Add(new KeyValuePair<String, String>("trawnik", "lawn"));
+		vocabularyToLearn.Add(new KeyValuePair<String, String>("sok", "juice"));
+		vocabularyToLearn.Add(new KeyValuePair<String, String>("miecz", "sword"));
+		vocabularyToLearn.Add(new KeyValuePair<String, String>("biurko", "desk"));
+	}
+	
+
+
     private void getToDB(GameState gameState)
     {
         string filepath = Application.persistentDataPath + "/Vocabulary.db"; //Path to database

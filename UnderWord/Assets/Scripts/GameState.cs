@@ -7,7 +7,8 @@ public class GameState : MonoBehaviour {
     public Vector2 playerCameraPosition;
     public bool isSet;
     public int levelCounter = 0;
-    public bool isNewLevel = false;
+	public bool isNewLevel = false;
+	public string sceneToGo;
 
     public static GameState gameState;
 
