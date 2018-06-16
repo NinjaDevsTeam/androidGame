@@ -32,7 +32,7 @@ public class LevelGenerator : MonoBehaviour {
         GameState gameState = GameObject.FindGameObjectWithTag("GameState").GetComponent<GameState>();
 		lvl = gameState.levelCounter;
 
-		seedVocabulary ();
+		//seedVocabulary ();
 
         if (gameState.isNewLevel)
         {
@@ -67,7 +67,7 @@ public class LevelGenerator : MonoBehaviour {
                 Debug.Log(ex.Message);
                 System.Diagnostics.Debug.WriteLine(ex.Message);
             }
-			//getToDB(gameState);
+			getToDB(gameState);
         }
         else if (generator != this)
         {
